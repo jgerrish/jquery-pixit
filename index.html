@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Pixit</title>
+  <link rel="stylesheet" type="text/css" href="pixit.css" />
+  <script type="text/javascript" src="http://ajax.aspnetcdn.com/ajax/jQuery/jquery-1.5.min.js"></script>
+  <script type="text/javascript" src="http://layout.jquery-dev.net/lib/js/jquery.layout-latest.js"></script>
+  <script type="text/javascript" src="jquery.pixit-palette.js"></script>
+  <script type="text/javascript" src="jquery.pixit-canvas.js"></script>
+  <script type="text/javascript" src="jquery.pixit-preview.js"></script>
+  <script>
+    $(document).ready(function () {
+      $('body').layout({ applyDefaultStyles: true });
+      $('canvas#preview').pixitPreview();
+
+      $('canvas#canvas').pixitCanvas('init', {
+        picture_width: 8,
+        picture_height: 8,
+        canvas_pixel_width: 50,
+        canvas_pixel_height: 50,
+        preview: $('canvas#preview')
+      });
+
+      $('canvas#palette').pixitPalette({
+        canvas : $('canvas#canvas'),
+        pixel_width: 50,
+        pixel_height: 50
+      });
+
+    });
+  </script>
+</head>
+<body>
+
+<h1>Pixit</h1>
+
+<div class="ui-layout-center">
+
+  <canvas id="canvas" width="400" height="400">
+    JavaScript required to use Pixit
+  </canvas>
+
+</div>
+
+<div class="ui-layout-north">
+  <h1>Welcome to Pixit!</h1>
+</div>
+
+<div class="ui-layout-south">
+  <p class="notice">
+    Notice update goes here
+  </p>
+</div>
+
+<div class="ui-layout-east">
+  <h2>Preview</h2>
+
+  <canvas id="preview" width="8" height="8">
+  JavaScript required to use Pixit
+  </canvas>
+
+  <h2>Color Palette</h2>
+  <canvas id="palette" width="100" height="200">
+    JavaScript required to use Pixit
+  </canvas>
+
+  <h2>Current Color</h2>
+  <div id="currentcolor">
+  </div>
+</div>
+<!-- <div class="ui-layout-west">West</div> -->
+
+</body>
+</html>
