@@ -1,18 +1,33 @@
 ;(function($) {
       var methods = {
           init : function(options) {
-              var opts = $.extend({}, $.fn.pixitPreview.defaults, options);
+            return this.each(function() {
+                var opts = $.extend({}, $.fn.pixitPreview.defaults, options);
+                $(this).data('canvasPixels', []);
+
+                canvasPixels = $(this).data('canvasPixels');
+
+                for (y = 0; y <= opts.height - 1; y++) {
+                    var x = new Array(8);
+                    canvasPixels[y] = [x];
+                    for (x = 0; x <= opts.width - 1; x++) {
+                        canvasPixels[y][x] = "#ffffff";
+                    }
+                }
+
+            });
           },
           drawPixel : function(pos, color) {
-          return this.each(function() {
-                               var canvas = this;
+              return this.each(function() {
+                  canvasPixels = $(this).data('canvasPixels');
+                  if (this.getContext) {
+                      var ctx = this.getContext('2d');
+                      ctx.fillStyle = color;
+                      ctx.fillRect(pos[0], pos[1], 1, 1);
 
-                               if (canvas.getContext) {
-                                   var ctx = canvas.getContext('2d');
-                                   ctx.fillStyle = color;
-                                   ctx.fillRect(pos.x, pos.y, 1, 1);
-                               }
-                           });
+                      canvasPixels[pos[1]][pos[0]] = color;
+                  }
+              });
           }
       };
 
@@ -27,6 +42,8 @@
       };
 
      $.fn.pixitPreview.defaults = {
+        width: 8,
+        height: 8
      };
 
 })(jQuery);

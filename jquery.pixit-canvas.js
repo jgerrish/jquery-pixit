@@ -29,17 +29,19 @@
         currentColor = $(this_element).data('currentColor');
         opts = $(this_element).data('opts');
 
-        if (canvasPixels[box_chosen.y][box_chosen.x] == currentColor) {
+        if (canvasPixels[box_chosen[1]][box_chosen[0]] == currentColor) {
             color = "#ffffff";
         } else {
             color = currentColor;
         }
 
-        canvasPixels[box_chosen.y][box_chosen.x] = color;
+        canvasPixels[box_chosen[1]][box_chosen[0]] = color;
         changePixelColor(this_element, opts, box_chosen, color);
 
-        // Update the preview
-        opts.preview.pixitPreview('drawPixel', box_chosen, color);
+        // Update the preview if there is one
+        if (opts.preview) {
+            opts.preview.pixitPreview('drawPixel', box_chosen, color);
+        }
     };
 
     function startCanvasRectangle(this_element, evnt) {
@@ -48,11 +50,11 @@
         startx = pos[0];
         starty = pos[1];
         box_chosen = findBox(pos, opts);
-        if (box_chosen.x > (opts.picture_width - 1)) {
-            box_chosen.x = opts.picture_width - 1;
+        if (box_chosen[0] > (opts.picture_width - 1)) {
+            box_chosen[0] = opts.picture_width - 1;
         }
-        if (box_chosen.y > (opts.picture_height - 1)) {
-            box_chosen.y = opts.picture_height - 1;
+        if (box_chosen[1] > (opts.picture_height - 1)) {
+            box_chosen[1] = opts.picture_height - 1;
         }
         drawPixel(this_element, box_chosen, "#000000");
     };
@@ -111,8 +113,8 @@
         var ctx = this_element.getContext('2d');
 
         ctx.fillStyle = color;
-        ctx.fillRect(box_chosen.x * opts.canvas_pixel_width + 1,
-                     box_chosen.y * opts.canvas_pixel_height + 1,
+        ctx.fillRect(box_chosen[0] * opts.canvas_pixel_width + 1,
+                     box_chosen[1] * opts.canvas_pixel_height + 1,
                      opts.canvas_pixel_width - 2,
                      opts.canvas_pixel_height - 2);
     };
@@ -132,10 +134,9 @@
     function globalToLocal(this_element, globalX, globalY) {
         var offset = $(this_element).offset();
 
-        return({
-            x: Math.floor( globalX - offset.left ),
-            y: Math.floor( globalY - offset.top )
-        });
+        return ([ Math.floor( globalX - offset.left ),
+                  Math.floor( globalY - offset.top )
+                ]);
     };
 
     function mousePosition(this_element, evnt, opts) {
@@ -147,13 +148,9 @@
     }
 
     function findBox(pos, opts) {
-        var box_x = Math.floor(pos.x / opts.canvas_pixel_width);
-        var box_y = Math.floor(pos.y / opts.canvas_pixel_height);
-        return new Position(box_x, box_y);
-    }
+        var box_x = Math.floor(pos[0] / opts.canvas_pixel_width);
+        var box_y = Math.floor(pos[1] / opts.canvas_pixel_height);
 
-    function Position(x, y) {
-        this.x = x;
-        this.y = y; 
+        return [box_x, box_y];
     }
 })(jQuery);

@@ -25,13 +25,13 @@
                   var pos = mousePosition(evnt);
                   box_chosen = findBox(pos, opts);
 
-                  if (box_chosen.x > (opts.palette_width - 1)) {
-                      box_chosen.x = opts.palette_width - 1;
+                  if (box_chosen[0] > (opts.palette_width - 1)) {
+                      box_chosen[0] = opts.palette_width - 1;
                   }
-                  if (box_chosen.y > (opts.palette_height - 1)) {
-                      box_chosen.y = opts.palette_height - 1;
+                  if (box_chosen[1] > (opts.palette_height - 1)) {
+                      box_chosen[1] = opts.palette_height - 1;
                   }
-                  var color = paletteColors[box_chosen.y * 2 + box_chosen.x];
+                  var color = paletteColors[box_chosen[1] * 2 + box_chosen[0]];
                   changeCurrentColor(color);
               };
 
@@ -84,19 +84,18 @@
      };
 
       function findBox(pos, opts) {
-          var box_x = Math.floor(pos.x / opts.pixel_width);
-          var box_y = Math.floor(pos.y / opts.pixel_height);
+          var box_x = Math.floor(pos[0] / opts.pixel_width);
+          var box_y = Math.floor(pos[1] / opts.pixel_height);
 
-          return new Position(box_x, box_y);
+          return [box_x, box_y];
       };
 
       function globalToLocal(this_element, globalX, globalY) {
         var offset = $(this_element).offset();
 
-        return({
-            x: Math.floor( globalX - offset.left ),
-            y: Math.floor( globalY - offset.top )
-        });
+        return ([ Math.floor( globalX - offset.left ),
+                  Math.floor( globalY - offset.top )
+                ]);
       };
 
     function mousePosition(this_element, evnt) {
@@ -107,8 +106,4 @@
           return pos;
       }
 
-    function Position(x, y) {
-        this.x = x;
-        this.y = y; 
-    }
 })(jQuery);
