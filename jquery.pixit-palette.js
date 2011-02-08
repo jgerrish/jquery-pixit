@@ -86,7 +86,6 @@
         }
 
         if (drawingCanvas) {
-            console.log("test");
             drawingCanvas.pixitCanvas('changeCurrentColor', color);
         }
     };
