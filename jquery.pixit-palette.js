@@ -1,75 +1,114 @@
 ;(function($) {
 
-      $.fn.pixitPalette = function(options) {
-          opts = $.extend({}, $.fn.pixitPalette.defaults, options);
-          this_element = $(this);
-          var paletteColors = opts.paletteColors;
-          var canvas = opts.canvas;
+    var methods = {
+        init : function(options) {
+            return this.each(function() {
+                init(this, options);
+            });
+        },
+        changeCurrentColor : function(color) {
+            return this.each(function() {
+                changeCurrentColor(this, color);
+            });
+        },
+    };
 
-          drawPalette = function(this_element, opts) {
-              var palette = this_element;
+    $.fn.pixitPalette = function(method) {
+        if (methods[method]) {
+            return methods[method].apply(this,
+                           Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === 'object' || !method) {
+            return methods.init.apply(this, arguments);
+        } else {
+            $.error('Method ' +  method + ' does not exist on jQuery.pixitCanvas');
+        }
+    };
 
-              changeCurrentColor = function(color) {
-                  currentColor = color;
+    function init(this_element, options) {
+        opts = $.extend({}, $.fn.pixitPalette.defaults, options);
 
-                  var elementId = 'currentcolor';
-                  var currentColorEl = document.getElementById(elementId);
+        $(this_element).data('opts', opts);
+        $(this_element).data('drawingCanvas', opts.drawingCanvas);
+        $(this_element).data('paletteColors', opts.paletteColors);
+        $(this_element).data('currentColor', opts.currentColor);
 
-                  currentColorEl.style.backgroundColor = color;
-                  //$(this).data('currentColor', currentColor);
-                  canvas.data('currentColor', currentColor);
-              };
 
-              startPaletteRectangle = function(evnt) {
-                  var canvas = this_element;
-                  var pos = mousePosition(evnt);
-                  box_chosen = findBox(pos, opts);
+        if (opts.currentColorCanvas) {
+            $(this_element).data('currentColorCanvas', opts.currentColorCanvas);
+        }
 
-                  if (box_chosen[0] > (opts.palette_width - 1)) {
-                      box_chosen[0] = opts.palette_width - 1;
-                  }
-                  if (box_chosen[1] > (opts.palette_height - 1)) {
-                      box_chosen[1] = opts.palette_height - 1;
-                  }
-                  var color = paletteColors[box_chosen[1] * 2 + box_chosen[0]];
-                  changeCurrentColor(color);
-              };
+        drawPalette(this_element, opts);
 
-              if (palette.getContext) {
-                  palette.setAttribute("width",
-                                       opts.palette_width * opts.pixel_width +
-                                       10);
-                  palette.setAttribute("height",
-                                       opts.palette_height * opts.pixel_height +
-                                       10);
-                  var ctx = palette.getContext('2d');
+        $(this_element).click(function(event) {
+            startPaletteRectangle(this, event);
+        });
+    };
 
-                  for (y = 0; y <= opts.palette_height - 1; y++) {
-                      for (x = 0; x <= opts.palette_width - 1; x++) {
-                          ctx.strokeStyle="#000000";
-                          ctx.strokeRect(x * opts.pixel_width,
-                                         y * opts.pixel_height,
-                                         opts.pixel_width,
-                                         opts.pixel_height);
+    function drawPalette(this_element, opts) {
+        paletteColors = $(this_element).data('paletteColors');
+        var canvas = opts.canvas;
 
-                          ctx.fillStyle = paletteColors[y * 2 + x];
-                          ctx.fillRect(x * opts.pixel_width + 1,
-                                       y * opts.pixel_height + 1,
-                                       opts.pixel_width - 2,
-                                       opts.pixel_height - 2);
-                      }
-                  }
+        if (this_element.getContext) {
+            this_element.setAttribute("width",
+                                 opts.palette_width * opts.pixel_width +
+                                 10);
+            this_element.setAttribute("height",
+                                 opts.palette_height * opts.pixel_height +
+                                 10);
+            var ctx = this_element.getContext('2d');
 
-                  $(this_element).click(function(event) {
-                      startPaletteRectangle(this, event);
-                  });
-              }
-          };
+            for (y = 0; y <= opts.palette_height - 1; y++) {
+                for (x = 0; x <= opts.palette_width - 1; x++) {
+                    ctx.strokeStyle="#000000";
+                    ctx.strokeRect(x * opts.pixel_width,
+                                   y * opts.pixel_height,
+                                   opts.pixel_width,
+                                   opts.pixel_height);
 
-          return this.each(function() {
-                               drawPalette(this, opts);
-                          });
-     };
+                    ctx.fillStyle = paletteColors[y * 2 + x];
+                    ctx.fillRect(x * opts.pixel_width + 1,
+                                 y * opts.pixel_height + 1,
+                                 opts.pixel_width - 2,
+                                 opts.pixel_height - 2);
+                }
+            }
+        }
+    };
+
+    function changeCurrentColor(this_element, color) {
+        $(this_element).data('currentColor', color);
+
+        currentColorCanvas = $(this_element).data('currentColorCanvas');
+        drawingCanvas = $(this_element).data('drawingCanvas');
+
+        if (currentColorCanvas) {
+            currentColorCanvas.css("backgroundColor", color);
+        }
+
+        if (drawingCanvas) {
+            console.log("test");
+            drawingCanvas.pixitCanvas('changeCurrentColor', color);
+        }
+    };
+
+    function startPaletteRectangle(this_element, evnt) {
+        var pos = mousePosition(this_element, evnt, opts);
+        opts = $(this_element).data('opts');
+
+        box_chosen = findBox(pos, opts);
+
+        if (box_chosen[0] > (opts.palette_width - 1)) {
+            box_chosen[0] = opts.palette_width - 1;
+        }
+        if (box_chosen[1] > (opts.palette_height - 1)) {
+            box_chosen[1] = opts.palette_height - 1;
+        }
+
+        paletteColors = $(this_element).data('paletteColors');
+
+        var color = paletteColors[box_chosen[1] * 2 + box_chosen[0]];
+        changeCurrentColor(this_element, color);
+    };
 
      $.fn.pixitPalette.defaults = {
          paletteColors: [
@@ -98,7 +137,7 @@
                 ]);
       };
 
-    function mousePosition(this_element, evnt) {
+    function mousePosition(this_element, evnt, opts) {
           evnt = (evnt) ? evnt : ((window.event) ? window.event : "");
 
           var pos = globalToLocal(this_element, evnt.pageX, evnt.pageY);

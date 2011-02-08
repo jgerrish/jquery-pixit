@@ -5,6 +5,11 @@
                 init(this, options);
             });
         },
+        changeCurrentColor : function(color) {
+            return this.each(function() {
+                $(this).data('currentColor', color);
+            });
+        },
         changePixelColor : changePixelColor,
         drawPixel : function(box_chosen, color) {
             return this.each(function() {
@@ -14,14 +19,14 @@
     };
 
     $.fn.pixitCanvas = function(method) {
-        if ( methods[method] ) {
-            return methods[method].apply( this, Array.prototype.slice.call( arguments, 1 ));
-        } else if ( typeof method === 'object' || ! method ) {
+        if (methods[method]) {
+            return methods[method].apply(this,
+                             Array.prototype.slice.call(arguments, 1));
+        } else if (typeof method === 'object' || !method) {
             return methods.init.apply(this, arguments);
         } else {
-            $.error( 'Method ' +  method + ' does not exist on jQuery.pixitCanvas' );
+            $.error('Method ' +  method + ' does not exist on jQuery.pixitCanvas');
         }
-
     };
 
     function drawPixel(this_element, box_chosen, color) {
@@ -47,15 +52,19 @@
     function startCanvasRectangle(this_element, evnt) {
         opts = $.fn.pixitCanvas.defaults;
         var pos = mousePosition(this_element, evnt, opts);
+
         startx = pos[0];
         starty = pos[1];
+
         box_chosen = findBox(pos, opts);
+
         if (box_chosen[0] > (opts.picture_width - 1)) {
             box_chosen[0] = opts.picture_width - 1;
         }
         if (box_chosen[1] > (opts.picture_height - 1)) {
             box_chosen[1] = opts.picture_height - 1;
         }
+
         drawPixel(this_element, box_chosen, "#000000");
     };
 
@@ -91,9 +100,9 @@
 
         $(this_element).data('canvasPixels', []);
         $(this_element).data('opts', opts);
+        $(this_element).data('currentColor', "#000000");
         initializeCanvas(this_element, opts);
 
-        $(this_element).data('currentColor', "#000000");
         drawCanvas(this_element, opts);
     };
 

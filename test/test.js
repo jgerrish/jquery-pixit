@@ -44,7 +44,7 @@ $(document).ready(function() {
         ok($('canvas#canvas').pixitCanvas('drawPixel', [0,0], "#000000"),
            "draw on canvas");
         var pixels = $('canvas#preview').data('canvasPixels');
-        equals("#000000", pixels[0][0]);        
+        equals(pixels[0][0], "#000000");
     });
 
     module("pixit-palette module");
@@ -52,5 +52,37 @@ $(document).ready(function() {
     test("Initialize pixit-palette", function() {
         expect(1);
         ok($('canvas#palette').pixitPalette(), "initialize pixit-palette");
+    });
+
+    test("Change pixit-palette current color", function() {
+        expect(3);
+
+        ok($('canvas#palette').pixitPalette(), "initialize pixit-palette");
+
+        var color = "#303030";
+        ok($('canvas#palette').pixitPalette('changeCurrentColor', color),
+           "change current palette color");
+
+        var newColor = $('canvas#palette').data('currentColor');
+        equals(newColor, color);
+    });
+
+    test("Changing the current color on the palette updates the linked pixit-canvas", function() {
+        expect(5);
+        ok($('canvas#canvas').pixitCanvas(), "initialize pixit-canvas");
+
+        ok($('canvas#palette').pixitPalette({
+            drawingCanvas: $('canvas#canvas')
+        }), "initialize pixit-palette");
+
+        var color = "#303030";
+        ok($('canvas#palette').pixitPalette('changeCurrentColor', color),
+           "change current palette color");
+
+        var newColor = $('canvas#palette').data('currentColor');
+        equals(newColor, color);
+
+        newColor = $('canvas#canvas').data('currentColor');
+        equals(newColor, color);
     });
 });
