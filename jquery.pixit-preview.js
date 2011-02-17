@@ -1,3 +1,27 @@
+/*
+ * jQuery Preview widget plugin
+ * A simple image editor preview widget for jQuery
+ *
+ * Usage:
+ *
+   $(document).ready(function () {
+      $('canvas#preview').pixitPreview();
+    });
+ *
+ * Copyright (c) Joshua Gerrish (http://www.joshuagerrish.com), 2011.
+ * Dual-licensed under the BSD (BSD-LICENSE.txt) and GPL (GPL-LICENSE.txt)
+ * licenses.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 ;(function($) {
       var methods = {
           init : function(options) {

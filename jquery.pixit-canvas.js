@@ -1,3 +1,33 @@
+/*
+ * jQuery Pixel Editor Canvas widget plugin
+ * A simple pixel editor widget for jQuery
+ *
+ * Usage:
+ *
+   $(document).ready(function () {
+      $('canvas#canvas').pixitCanvas('init', {
+        picture_width: 8,
+        picture_height: 8,
+        canvas_pixel_width: 50,
+        canvas_pixel_height: 50,
+        preview: $('canvas#preview')
+      });
+    });
+ *
+ * Copyright (c) Joshua Gerrish (http://www.joshuagerrish.com), 2011.
+ * Dual-licensed under the BSD (BSD-LICENSE.txt) and GPL (GPL-LICENSE.txt)
+ * licenses.
+ *
+ * This program is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 2 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ */
 ;(function($) {
     var methods = {
         init : function(options) {
